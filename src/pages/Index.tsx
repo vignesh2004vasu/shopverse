@@ -9,13 +9,6 @@ interface CartItem extends Product {
   quantity: number;
 }
 
-interface ProductModalProps {
-  product: Product | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onAddToCart: (quantity: number) => void;
-}
-
 const Index = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -114,7 +107,7 @@ const Index = () => {
         onCategoryChange={setSelectedCategory}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+      <main className="max-w-7xl pt-56 mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
         {isLoading ? (
           <div className="grid product-grid">
             {[...Array(8)].map((_, i) => (

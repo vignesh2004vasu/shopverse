@@ -1,4 +1,3 @@
-
 import { ShoppingCart, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +10,7 @@ interface HeaderProps {
   selectedCategory: string;
   categories: string[];
   onCategoryChange: (category: string) => void;
+  searchQuery: string; // Add this line
 }
 
 export const Header = ({
@@ -19,6 +19,7 @@ export const Header = ({
   selectedCategory,
   categories,
   onCategoryChange,
+  searchQuery, // Add this line
 }: HeaderProps) => {
   const navigate = useNavigate();
 
@@ -36,12 +37,13 @@ export const Header = ({
           </div>
           
           <div className="flex-1 flex justify-center space-x-4">
-            <div className="relative w-full max-w-xs">
+            <div className="relative w-full max-w-2xl"> {/* Changed from max-w-xs to max-w-2xl */}
               <Input
                 type="search"
                 placeholder="Search products..."
-                className="w-full pl-10"
+                className="w-full pl-10 h-10 text-base" /* Added h-10 for height and text-base for font size */
                 onChange={(e) => onSearchChange(e.target.value)}
+                value={searchQuery} /* Add this prop */
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </div>

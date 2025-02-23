@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,8 +13,8 @@ interface CartItem extends Product {
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const items = useSelector((state: RootState) => state.cart.items);
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Get both items and total from Redux store
+  const { items, total } = useSelector((state: RootState) => state.cart);
 
   const handleUpdateQuantity = (productId: number, quantity: number) => {
     dispatch(updateQuantity({ productId, quantity }));
@@ -39,7 +38,9 @@ const Cart = () => {
           </Button>
           <div className="text-center py-12">
             <h2 className="text-2xl font-semibold mb-4">Your cart is empty</h2>
-            <Button onClick={() => navigate("/products")}>Continue Shopping</Button>
+            <Button onClick={() => navigate("/products")}>
+              Continue Shopping
+            </Button>
           </div>
         </div>
       </div>
@@ -71,7 +72,7 @@ const Cart = () => {
                   className="object-cover w-full h-full"
                 />
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium">{item.title}</h3>
                 <p className="text-sm text-muted-foreground mt-1">
@@ -84,7 +85,12 @@ const Cart = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => handleUpdateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                    onClick={() =>
+                      handleUpdateQuantity(
+                        item.id,
+                        Math.max(0, item.quantity - 1)
+                      )
+                    }
                     disabled={item.quantity <= 1}
                   >
                     -
@@ -93,7 +99,9 @@ const Cart = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                    onClick={() =>
+                      handleUpdateQuantity(item.id, item.quantity + 1)
+                    }
                   >
                     +
                   </Button>

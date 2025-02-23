@@ -52,7 +52,7 @@ export const Header = ({
                   key={category}
                   onClick={() => onCategoryChange(category)}
                   className={cn(
-                    "px-3 py-1 rounded-full text-sm transition-colors",
+                    "px-3 py-1 rounded text-sm transition-colors",
                     selectedCategory === category
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-secondary-foreground hover:bg-secondary/80"

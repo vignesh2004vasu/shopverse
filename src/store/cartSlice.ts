@@ -1,4 +1,3 @@
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Product } from '@/types';
 
@@ -8,10 +7,27 @@ interface CartItem extends Product {
 
 interface CartState {
   items: CartItem[];
+  total: number;
 }
 
-const initialState: CartState = {
-  items: []
+// Load initial state from localStorage
+const loadState = (): CartState => {
+  try {
+    const serializedState = localStorage.getItem('cart');
+    if (serializedState === null) {
+      return { items: [], total: 0 };
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return { items: [], total: 0 };
+  }
+};
+
+const initialState: CartState = loadState();
+
+// Helper function to calculate total
+const calculateTotal = (items: CartItem[]): number => {
+  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 };
 
 const cartSlice = createSlice({
@@ -27,6 +43,8 @@ const cartSlice = createSlice({
       } else {
         state.items.push({ ...product, quantity });
       }
+      state.total = calculateTotal(state.items);
+      localStorage.setItem('cart', JSON.stringify(state));
     },
     updateQuantity: (state, action: PayloadAction<{ productId: number; quantity: number }>) => {
       const { productId, quantity } = action.payload;
@@ -38,12 +56,21 @@ const cartSlice = createSlice({
           item.quantity = quantity;
         }
       }
+      state.total = calculateTotal(state.items);
+      localStorage.setItem('cart', JSON.stringify(state));
     },
     removeFromCart: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(item => item.id !== action.payload);
+      state.total = calculateTotal(state.items);
+      localStorage.setItem('cart', JSON.stringify(state));
+    },
+    clearCart: (state) => {
+      state.items = [];
+      state.total = 0;
+      localStorage.removeItem('cart');
     }
   }
 });
 
-export const { addToCart, updateQuantity, removeFromCart } = cartSlice.actions;
+export const { addToCart, updateQuantity, removeFromCart, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

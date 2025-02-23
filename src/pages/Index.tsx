@@ -6,15 +6,21 @@ import { ProductModal } from "@/components/ProductModal";
 import { Product } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 
+interface CartItem extends Product {
+  quantity: number;
+}
+
 const Index = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -53,12 +59,39 @@ const Index = () => {
   );
 
   const handleAddToCart = () => {
-    setCartCount((prev) => prev + 1);
-    toast({
-      title: "Added to cart",
-      description: selectedProduct?.title,
-    });
-    setSelectedProduct(null);
+    if (selectedProduct) {
+      setCartItems(prev => {
+        const existingItem = prev.find(item => item.id === selectedProduct.id);
+        if (existingItem) {
+          return prev.map(item =>
+            item.id === selectedProduct.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          );
+        }
+        return [...prev, { ...selectedProduct, quantity: 1 }];
+      });
+      
+      toast({
+        title: "Added to cart",
+        description: selectedProduct.title,
+      });
+      setSelectedProduct(null);
+    }
+  };
+
+  const handleUpdateQuantity = (productId: number, quantity: number) => {
+    setCartItems(prev =>
+      quantity === 0
+        ? prev.filter(item => item.id !== productId)
+        : prev.map(item =>
+            item.id === productId ? { ...item, quantity } : item
+          )
+    );
+  };
+
+  const handleRemoveItem = (productId: number) => {
+    setCartItems(prev => prev.filter(item => item.id !== productId));
   };
 
   return (

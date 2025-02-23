@@ -3,6 +3,7 @@ import { ShoppingCart, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   cartCount: number;
@@ -19,12 +20,19 @@ export const Header = ({
   categories,
   onCategoryChange,
 }: HeaderProps) => {
+  const navigate = useNavigate();
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-morphism">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <h1 className="text-2xl font-semibold tracking-tight">Store</h1>
+            <h1 
+              className="text-2xl font-semibold tracking-tight cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              Store
+            </h1>
           </div>
           
           <div className="flex-1 flex justify-center space-x-4">
@@ -57,7 +65,10 @@ export const Header = ({
           </div>
 
           <div className="flex-1 flex justify-end">
-            <button className="relative p-2 rounded-full hover:bg-secondary/80 transition-colors">
+            <button 
+              className="relative p-2 rounded-full hover:bg-secondary/80 transition-colors"
+              onClick={() => navigate("/cart")}
+            >
               <ShoppingCart className="h-6 w-6" />
               {cartCount > 0 && (
                 <Badge

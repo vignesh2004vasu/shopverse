@@ -3,13 +3,27 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { ArrowRight } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useState } from "react";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const categories = ["electronics", "jewelry", "men's clothing", "women's clothing"];
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header 
+        cartCount={cartCount}
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        categories={categories}
+        onCategoryChange={setSelectedCategory}
+      />
       
       {/* Hero Section */}
       <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-primary to-white">
@@ -37,7 +51,7 @@ const LandingPage = () => {
             Featured Categories
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {["electronics", "jewelry", "men's clothing", "women's clothing"].map((category) => (
+            {categories.map((category) => (
               <div
                 key={category}
                 className="bg-white rounded-lg shadow-md p-6 text-center cursor-pointer hover:shadow-lg transition-shadow"

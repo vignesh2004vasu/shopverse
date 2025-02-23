@@ -3,20 +3,27 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { updateQuantity, removeFromCart } from "@/store/cartSlice";
 
 interface CartItem extends Product {
   quantity: number;
 }
 
-interface CartPageProps {
-  items: CartItem[];
-  onUpdateQuantity: (productId: number, quantity: number) => void;
-  onRemoveItem: (productId: number) => void;
-}
-
-const Cart = ({ items, onUpdateQuantity, onRemoveItem }: CartPageProps) => {
+const Cart = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const items = useSelector((state: RootState) => state.cart.items);
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleUpdateQuantity = (productId: number, quantity: number) => {
+    dispatch(updateQuantity({ productId, quantity }));
+  };
+
+  const handleRemoveItem = (productId: number) => {
+    dispatch(removeFromCart(productId));
+  };
 
   if (items.length === 0) {
     return (
@@ -25,14 +32,14 @@ const Cart = ({ items, onUpdateQuantity, onRemoveItem }: CartPageProps) => {
           <Button
             variant="ghost"
             className="mb-8"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/products")}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Store
           </Button>
           <div className="text-center py-12">
             <h2 className="text-2xl font-semibold mb-4">Your cart is empty</h2>
-            <Button onClick={() => navigate("/")}>Continue Shopping</Button>
+            <Button onClick={() => navigate("/products")}>Continue Shopping</Button>
           </div>
         </div>
       </div>
@@ -45,7 +52,7 @@ const Cart = ({ items, onUpdateQuantity, onRemoveItem }: CartPageProps) => {
         <Button
           variant="ghost"
           className="mb-8"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/products")}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Store
@@ -77,7 +84,7 @@ const Cart = ({ items, onUpdateQuantity, onRemoveItem }: CartPageProps) => {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => onUpdateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                    onClick={() => handleUpdateQuantity(item.id, Math.max(0, item.quantity - 1))}
                     disabled={item.quantity <= 1}
                   >
                     -
@@ -86,7 +93,7 @@ const Cart = ({ items, onUpdateQuantity, onRemoveItem }: CartPageProps) => {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                    onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                   >
                     +
                   </Button>
@@ -94,7 +101,7 @@ const Cart = ({ items, onUpdateQuantity, onRemoveItem }: CartPageProps) => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => onRemoveItem(item.id)}
+                  onClick={() => handleRemoveItem(item.id)}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

@@ -10,7 +10,6 @@ interface HeaderProps {
   selectedCategory: string;
   categories: string[];
   onCategoryChange: (category: string) => void;
-  searchQuery: string; // Add this line
 }
 
 export const Header = ({
@@ -19,7 +18,6 @@ export const Header = ({
   selectedCategory,
   categories,
   onCategoryChange,
-  searchQuery, // Add this line
 }: HeaderProps) => {
   const navigate = useNavigate();
 
@@ -28,26 +26,25 @@ export const Header = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <h1 
+            <h1
               className="text-2xl font-semibold tracking-tight cursor-pointer"
               onClick={() => navigate("/")}
             >
               Store
             </h1>
           </div>
-          
+
           <div className="flex-1 flex justify-center space-x-4">
-            <div className="relative w-full max-w-2xl"> {/* Changed from max-w-xs to max-w-2xl */}
+            <div className="relative w-full max-w-xs">
               <Input
                 type="search"
                 placeholder="Search products..."
-                className="w-full pl-10 h-10 text-base" /* Added h-10 for height and text-base for font size */
+                className="w-full pl-10"
                 onChange={(e) => onSearchChange(e.target.value)}
-                value={searchQuery} /* Add this prop */
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </div>
-            
+
             <div className="flex space-x-2">
               {categories.map((category) => (
                 <button
@@ -67,7 +64,7 @@ export const Header = ({
           </div>
 
           <div className="flex-1 flex justify-end">
-            <button 
+            <button
               className="relative p-2 rounded-full hover:bg-secondary/80 transition-colors"
               onClick={() => navigate("/cart")}
             >
